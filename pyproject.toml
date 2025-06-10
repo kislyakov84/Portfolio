@@ -1,0 +1,26 @@
+[project]
+name = "portfolio"
+version = "0.1.0"
+description = "My personal portfolio website."
+authors = [{ name = "Sergey Kislyakov", email = "s.kislyakov84@gmail.com" }] # <- ЗАМЕНИ НА СВОИ ДАННЫЕ
+requires-python = ">=3.10"
+dependencies = [
+    # Здесь будут основные зависимости: fastapi, sqlalchemy и т.д.
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "pre-commit",
+    # Здесь будут другие dev-зависимости: pytest и т.д.
+]
+
+[tool.ruff]
+# Указываем, где искать исходный код
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "C4"]
+
+[tool.ruff.format]
+quote-style = "double"
