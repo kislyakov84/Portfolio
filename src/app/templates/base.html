@@ -1,0 +1,22 @@
+<!-- src/app/templates/base.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Моё портфолио{% endblock %}</title>
+
+    <!-- Подключаем HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.12" 
+            integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" 
+            crossorigin="anonymous"></script>
+
+    <!-- Место для наших будущих стилей -->
+    {% block styles %}{% endblock %}
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <main class="container mx-auto mt-10 px-4">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
