@@ -5,14 +5,17 @@ description = "My personal portfolio website."
 authors = [{ name = "Sergey Kislyakov", email = "s.kislyakov84@gmail.com" }] # <- ЗАМЕНИ НА СВОИ ДАННЫЕ
 requires-python = ">=3.10"
 dependencies = [
-    # Здесь будут основные зависимости: fastapi, sqlalchemy и т.д.
+    "fastapi",
+    "uvicorn[standard]", # [standard] добавляет стандартные зависимости uvicorn
 ]
 
 [project.optional-dependencies]
 dev = [
     "ruff",
     "pre-commit",
-    # Здесь будут другие dev-зависимости: pytest и т.д.
+    "pytest",
+    "pytest-asyncio", # для поддержки async/await в тестах
+    "httpx",          # для отправки HTTP-запросов в наше приложение в тестах
 ]
 
 [tool.ruff]
