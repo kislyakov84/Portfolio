@@ -1,0 +1,12 @@
+{
+  "name": "portfolio",
+  "version": "0.1.0",
+  "description": "My personal portfolio website styles.",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/app/static/css/input.css -o ./src/app/static/css/output.css",
+    "watch:css": "tailwindcss -i ./src/app/static/css/input.css -o ./src/app/static/css/output.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
+  }
+}

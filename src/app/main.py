@@ -2,9 +2,13 @@
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles  # <-- Импортируем StaticFiles
 from fastapi.templating import Jinja2Templates
 
 app = FastAPI(title="Portfolio App")
+
+# Монтируем директорию static для раздачи статических файлов (CSS, JS, изображения)
+app.mount("/static", StaticFiles(directory="src/app/static"), name="static")
 
 # Указываем FastAPI, где лежат шаблоны
 templates = Jinja2Templates(directory="src/app/templates")

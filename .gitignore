@@ -41,3 +41,7 @@ env
 
 # VSCode
 .vscode/
+
+# Node / Tailwind
+node_modules/
+/src/app/static/css/output.css
