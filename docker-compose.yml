@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  db:
+    # Используем официальный образ PostgreSQL
+    image: postgres:16-alpine
+    # Имя контейнера для удобства
+    container_name: portfolio_db
+    # Переменные окружения для настройки PostgreSQL
+    # ВАЖНО: для реального проекта используй более надежные пароли
+    # и управляй ими через .env файлы, которые не попадают в git.
+    environment:
+      - POSTGRES_USER=portfolio_user
+      - POSTGRES_PASSWORD=portfolio_pass
+      - POSTGRES_DB=portfolio_db
+    # Пробрасываем порт из контейнера (5432) на твой локальный компьютер (5432)
+    # Формат: <хост>:<контейнер>
+    ports:
+      - "5432:5432"
+    # Создаем volume, чтобы данные нашей БД сохранялись
+    # даже после остановки или удаления контейнера.
+    volumes:
+      - portfolio_postgres_data:/var/lib/postgresql/data
+
+# Определяем именованный volume для постоянного хранения данных
+volumes:
+  portfolio_postgres_data:

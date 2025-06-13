@@ -45,3 +45,5 @@ env
 # Node / Tailwind
 node_modules/
 /src/app/static/css/output.css
+# Environment variables
+.env

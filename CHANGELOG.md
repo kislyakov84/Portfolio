@@ -12,6 +12,10 @@ All notable changes to this project will be documented in this file.
 - Jinja2 for HTML templating.
 - Base template with HTMX included and an index page.
 - Root endpoint now serves an HTML response.
+- Docker Compose setup for PostgreSQL.
+- SQLAlchemy and `psycopg` for asynchronous database access.
+- Pydantic-based settings management.
+- Initial `Project` model for portfolio items.
 
 ### Changed
 - Updated root endpoint test to check for HTML content.
