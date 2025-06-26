@@ -9,10 +9,16 @@ class Settings(BaseSettings):
     """
 
     DATABASE_URL: str
-
-    # Указываем Pydantic, что нужно прочитать переменные из файла .env
     model_config = SettingsConfigDict(env_file=".env")
 
 
-# Создаем экземпляр настроек, который будет использоваться в приложении
+# --- БОЕВОЙ КОД ---
+# Ввиду аномалий окружения на Windows, мы жестко задаем DATABASE_URL,
+# чтобы гарантировать правильное подключение к Docker.
+# Это решение имеет наивысший приоритет и перекрывает любые внешние переменные.
+# settings = Settings(
+#    DATABASE_URL="postgresql+asyncpg://portfolio_user:portfolio_pass@host.docker.internal:5432/portfolio_db"
+# )
 settings = Settings()
+# УБЕДИСЬ, ЧТО ЭТА СТРОКА ЕСТЬ И ФАЙЛ СОХРАНЕН:
+# rint(f"!!! ИСПОЛЬЗУЕТСЯ DATABASE_URL: {settings.DATABASE_URL} !!!")

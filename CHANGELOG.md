@@ -16,6 +16,15 @@ All notable changes to this project will be documented in this file.
 - SQLAlchemy and `psycopg` for asynchronous database access.
 - Pydantic-based settings management.
 - Initial `Project` model for portfolio items.
+- Repository pattern for data access (`project_repository`).
+- Dependency injection for DB sessions (`get_db`).
+- `on_startup` event to create DB tables and seed initial data.
+- Environment-based configuration with `.env` file for database connection.
 
 ### Changed
 - Updated root endpoint test to check for HTML content.
+- Main page now dynamically displays a list of projects from the PostgreSQL database.
+- Reworked `index.html` to be a dynamic template with project cards.
+
+### Fixed
+- Resolved complex database connection issues related to Docker port conflicts and environment variable loading.

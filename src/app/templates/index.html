@@ -4,6 +4,41 @@
 {% block title %}Главная | Моё портфолио{% endblock %}
 
 {% block content %}
-    <h1 class="text-4xl font-bold">Привет! Я — твой будущий сайт-портфолио.</h1>
-    <p class="mt-4">Скоро здесь будет красиво и интерактивно!</p>
+    <header class="mb-10 text-center">
+        <h1 class="text-4xl font-bold">Сергей Кисляков</h1>
+        <p class="mt-2 text-xl text-gray-600">Python & Backend Developer</p>
+    </header>
+
+    <section id="projects">
+        <h2 class="text-3xl font-bold mb-6">Мои проекты</h2>
+        
+        {% if error %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+              <strong class="font-bold">Ошибка!</strong>
+              <span class="block sm:inline">{{ error }}</span>
+            </div>
+        {% elif projects %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for project in projects %}
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <h3 class="text-2xl font-semibold mb-2">{{ project.name }}</h3>
+                        <p class="text-gray-700 mb-4">{{ project.description }}</p>
+                        {% if project.url %}
+                            <a href="{{ project.url }}" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               class="text-blue-500 hover:text-blue-700 font-medium transition-colors">
+                                Посмотреть проект →
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-blue-100 border-t-4 border-blue-500 rounded-b text-blue-900 px-4 py-3 shadow-md" role="alert">
+                <p class="font-bold">Проекты в разработке!</p>
+                <p class="text-sm">Скоро здесь появится список моих работ. Заходите позже!</p>
+            </div>
+        {% endif %}
+    </section>
 {% endblock %}
