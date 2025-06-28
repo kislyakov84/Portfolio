@@ -1,32 +1,41 @@
 # tests/test_main.py
 
 import pytest
-from httpx import ASGITransport, AsyncClient
+from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.main import app
-
-# Клиент остается прежним, он универсален
-AppClient = AsyncClient(transport=ASGITransport(app=app), base_url="http://test")
+from app.models.project import Project
 
 
 @pytest.mark.asyncio
-async def test_root_renders_html():
+async def test_root_with_no_projects(client: AsyncClient):
     """
-    Тестируем, что главная страница ("/") возвращает HTML
-    и содержит ожидаемый заголовок.
+    Тестируем главную страницу, когда в БД нет проектов.
+    БД гарантированно пуста благодаря фикстуре db_session.
     """
-    async with AppClient as client:
-        response = await client.get("/")
+    response = await client.get("/")
 
-    # 1. Проверяем, что ответ успешный
     assert response.status_code == 200
+    assert "Проекты в разработке!" in response.text
+    assert "Тестовый проект" not in response.text
 
-    # 2. Проверяем, что Content-Type правильный (HTML)
-    assert "text/html" in response.headers["content-type"]
 
-    # 3. Проверяем, что в полученном HTML есть наш заголовок
-    assert "<title>Главная | Моё портфолио</title>" in response.text
-    assert (
-        '<h1 class="text-4xl font-bold">Привет! Я — твой будущий сайт-портфолио.</h1>'
-        in response.text
+@pytest.mark.asyncio
+async def test_root_with_projects(client: AsyncClient, db_session: AsyncSession):
+    """
+    Тестируем главную страницу, когда в БД есть проекты.
+    Ожидаем увидеть карточки проектов.
+    """
+    test_project = Project(
+        name="Тестовый проект",
+        description="Это описание для теста.",
+        url="http://test.com",
     )
+    db_session.add(test_project)
+    await db_session.commit()
+
+    response = await client.get("/")
+
+    assert response.status_code == 200
+    assert "Тестовый проект" in response.text
+    assert "Проекты в разработке!" not in response.text

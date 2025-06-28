@@ -86,16 +86,16 @@ async def read_root(request: Request, db: AsyncSession = Depends(get_db)):
     try:
         projects = await project_repository.get_projects(db)
         return templates.TemplateResponse(
+            request,  # <--- Проверяем здесь
             name="index.html",
-            context={"request": request, "projects": projects, "title": "Главная"},
+            context={"projects": projects, "title": "Главная"},
         )
     except sqlalchemy.exc.OperationalError:
         # Это временная "заглушка" на случай, если БД недоступна.
-        # В будущем мы сделаем обработку ошибок красивее.
         return templates.TemplateResponse(
+            request,  # <--- И здесь
             name="index.html",
             context={
-                "request": request,
                 "projects": [],
                 "error": "Не удалось подключиться к базе данных.",
                 "title": "Ошибка",

@@ -47,3 +47,5 @@ node_modules/
 /src/app/static/css/output.css
 # Environment variables
 .env
+
+/test.db
