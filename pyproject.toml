@@ -13,6 +13,7 @@ dependencies = [
     "sqlalchemy",
     "asyncpg",
     "psycopg[binary]", # Добавляем psycopg на всякий случай, [binary] - для легкой установки
+    "aiosqlite",
 ]
 
 [project.optional-dependencies]
