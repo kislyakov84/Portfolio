@@ -3,7 +3,7 @@
 from collections.abc import AsyncGenerator
 
 import sqlalchemy.exc  # Импортируем исключения sqlalchemy
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -15,6 +15,7 @@ from app.db.base_class import Base
 from app.db.session import async_engine, async_session_factory
 from app.models.project import Project
 from app.repositories import project_repository
+from app.schemas.project_schema import ProjectCreate
 
 app = FastAPI(title="Portfolio App")
 
@@ -101,3 +102,51 @@ async def read_root(request: Request, db: AsyncSession = Depends(get_db)):
                 "title": "Ошибка",
             },
         )
+
+
+@app.post("/projects/", response_class=HTMLResponse)
+async def create_project(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    # ЯВНО указываем, что данные приходят из полей формы
+    name: str = Form(...),
+    description: str = Form(...),
+    url: str | None = Form(None),  # Используем str, а не HttpUrl здесь
+):
+    """
+    Создает новый проект и возвращает HTML-фрагмент для него.
+    """
+    # Теперь мы вручную собираем нашу Pydantic-схему для валидации.
+    # Это дает нам больше контроля.
+    try:
+        project_data = {"name": name, "description": description, "url": url}
+        # Убираем None, если url пустой, чтобы валидация pydantic прошла
+        if not url:
+            del project_data["url"]
+
+        project_in = ProjectCreate.model_validate(project_data)
+
+    except Exception as e:
+        # Если валидация не прошла, можно вернуть ошибку (продвинутый шаг)
+        # Пока просто выведем в лог
+        print(f"Ошибка валидации Pydantic: {e}")
+        # И вернем ответ с ошибкой
+        return HTMLResponse("Неверные данные в форме.", status_code=422)
+
+    print(f"Получены данные из формы: {project_in.model_dump_json(indent=2)}")
+
+    new_project = Project(
+        name=project_in.name,
+        description=project_in.description,
+        # model_dump() вернет объект HttpUrl, нам нужна строка
+        url=str(project_in.url) if project_in.url else None,
+    )
+    db.add(new_project)
+    await db.commit()
+    await db.refresh(new_project)
+
+    return templates.TemplateResponse(
+        request,
+        name="partials/project_card.html",
+        context={"project": new_project},
+    )

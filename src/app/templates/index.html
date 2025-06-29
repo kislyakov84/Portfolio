@@ -9,6 +9,35 @@
         <p class="mt-2 text-xl text-gray-600">Python & Backend Developer</p>
     </header>
 
+    <section id="add-project-form" class="mb-10">
+        <h2 class="text-2xl font-bold mb-4">Добавить новый проект</h2>
+        <form 
+            hx-post="/projects/" 
+            hx-target="#project-list"
+            hx-swap="beforeend"
+            hx-on::after-request="this.reset()"
+            class="bg-white p-6 rounded-lg shadow-md"
+        >
+            <div class="mb-4">
+                <label for="name" class="block text-gray-700 font-bold mb-2">Название проекта:</label>
+                <input type="text" id="name" name="name" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+            <div class="mb-4">
+                <label for="description" class="block text-gray-700 font-bold mb-2">Описание:</label>
+                <textarea id="description" name="description" required rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+            </div>
+            <div class="mb-6">
+                <label for="url" class="block text-gray-700 font-bold mb-2">URL проекта (необязательно):</label>
+                <input type="url" id="url" name="url" placeholder="https://example.com" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+            <div class="flex items-center justify-between">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Добавить проект
+                </button>
+            </div>
+        </form>
+    </section>
+
     <section id="projects">
         <h2 class="text-3xl font-bold mb-6">Мои проекты</h2>
         
@@ -18,7 +47,8 @@
               <span class="block sm:inline">{{ error }}</span>
             </div>
         {% elif projects %}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Вот она, наша цель для HTMX -->
+            <div id="project-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {% for project in projects %}
                     {% include "partials/project_card.html" %}
                 {% endfor %}
