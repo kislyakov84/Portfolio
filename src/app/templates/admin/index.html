@@ -1,0 +1,30 @@
+<!-- src/app/templates/admin/index.html -->
+{% extends "base.html" %}
+
+{% block title %}{{ title }} | Моё портфолио{% endblock %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold mb-6">{{ title }}</h1>
+
+    {% if error %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Ошибка!</strong>
+            <span class="block sm:inline">{{ error }}</span>
+        </div>
+    {% endif %}
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <!-- Здесь будет таблица проектов -->
+        {% for project in projects %}
+            <div class="flex justify-between items-center py-2 border-b last:border-b-0">
+                <p class="font-medium">{{ project.name }}</p>
+                <div>
+                    <a href="#" class="text-blue-500 hover:text-blue-700 mr-4">Редактировать</a>
+                    <a href="#" class="text-red-500 hover:text-red-700">Удалить</a>
+                </div>
+            </div>
+        {% else %}
+            <p>Проектов пока не добавлено.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -104,6 +104,31 @@ async def read_root(request: Request, db: AsyncSession = Depends(get_db)):
         )
 
 
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_index(request: Request, db: AsyncSession = Depends(get_db)):
+    """
+    Отображает главную страницу админки со списком проектов.
+    """
+    try:
+        projects = await project_repository.get_projects(db)
+        return templates.TemplateResponse(
+            request=request,
+            name="admin/index.html",  # <-- Обрати внимание, новый путь!
+            context={"projects": projects, "title": "Управление проектами"},
+        )
+    except sqlalchemy.exc.OperationalError:
+        # На случай, если БД недоступна
+        return templates.TemplateResponse(
+            request=request,
+            name="admin/index.html",
+            context={
+                "projects": [],
+                "error": "Не удалось подключиться к базе данных.",
+                "title": "Ошибка",
+            },
+        )
+
+
 @app.post("/projects/", response_class=HTMLResponse)
 async def create_project(
     request: Request,
