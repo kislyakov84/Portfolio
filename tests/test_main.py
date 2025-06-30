@@ -2,6 +2,7 @@
 
 import pytest
 from httpx import AsyncClient
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.project import Project
@@ -65,3 +66,28 @@ async def test_admin_page_displays_projects(
     assert "Управление проектами" in response.text
     assert "Проект для админки" in response.text
     assert "Редактировать" in response.text  # Проверим наличие кнопок
+
+
+@pytest.mark.asyncio
+async def test_delete_project(client: AsyncClient, db_session: AsyncSession):
+    """
+    Тестируем удаление проекта через DELETE-запрос.
+    """
+    # Arrange: Создаем проект для удаления
+    project_to_delete = Project(name="Проект на удаление", description="...")
+    db_session.add(project_to_delete)
+    await db_session.commit()
+    await db_session.refresh(project_to_delete)  # Получаем его id из БД
+    project_id = project_to_delete.id
+
+    # Act: Отправляем DELETE-запрос, как это сделал бы HTMX
+    response = await client.delete(f"/admin/projects/{project_id}")
+
+    # Assert: Проверяем, что эндпоинт отработал успешно
+    assert response.status_code == 200
+    assert response.text == ""  # Ожидаем пустой ответ
+
+    # Assert: Проверяем, что проекта больше нет в БД
+    query = select(Project).where(Project.id == project_id)
+    result = await db_session.execute(query)
+    assert result.scalar_one_or_none() is None

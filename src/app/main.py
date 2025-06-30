@@ -3,8 +3,8 @@
 from collections.abc import AsyncGenerator
 
 import sqlalchemy.exc  # Импортируем исключения sqlalchemy
-from fastapi import Depends, FastAPI, Form, Request
-from fastapi.responses import HTMLResponse
+from fastapi import Depends, FastAPI, Form, HTTPException, Request, status
+from fastapi.responses import HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import select
@@ -175,3 +175,29 @@ async def create_project(
         name="partials/project_card.html",
         context={"project": new_project},
     )
+
+
+@app.delete("/admin/projects/{project_id}", status_code=status.HTTP_200_OK)
+async def api_delete_project(project_id: int, db: AsyncSession = Depends(get_db)):
+    """
+    API эндпоинт для удаления проекта.
+    """
+    # 1. Находим проект в БД
+    project_to_delete = await project_repository.get_project_by_id(
+        db=db, project_id=project_id
+    )
+
+    # 2. Если не нашли - возвращаем ошибку 404
+    if not project_to_delete:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Проект не найден"
+        )
+
+    # 3. Если нашли - удаляем его
+    await db.delete(project_to_delete)
+    # 4. Сохраняем изменения. Наша зависимость get_db позаботится о `commit`.
+    await db.commit()  # Важный шаг, чтобы изменения сохранились в БД для теста!
+
+    # 5. Возвращаем пустой ответ со статусом 200 OK.
+    # HTMX, получив такой ответ, удалит элемент со страницы.
+    return Response(content="", status_code=status.HTTP_200_OK)

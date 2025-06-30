@@ -14,13 +14,23 @@
     {% endif %}
 
     <div class="bg-white p-6 rounded-lg shadow-md">
-        <!-- Здесь будет таблица проектов -->
+        <!-- Оборачиваем каждую строку в div с уникальным ID -->
         {% for project in projects %}
-            <div class="flex justify-between items-center py-2 border-b last:border-b-0">
+            <div id="project-row-{{ project.id }}" class="flex justify-between items-center py-2 border-b last:border-b-0">
                 <p class="font-medium">{{ project.name }}</p>
                 <div>
                     <a href="#" class="text-blue-500 hover:text-blue-700 mr-4">Редактировать</a>
-                    <a href="#" class="text-red-500 hover:text-red-700">Удалить</a>
+                    
+                    <!-- ИЗМЕНЯЕМ ССЫЛКУ УДАЛЕНИЯ -->
+                    <a href="#"
+                    class="text-red-500 hover:text-red-700"
+                    hx-delete="/admin/projects/{{ project.id }}"
+                    hx-target="#project-row-{{ project.id }}"
+                    hx-swap="outerHTML"
+                    hx-confirm="Вы уверены, что хотите удалить проект '{{ project.name }}'?"
+                    >
+                        Удалить
+                    </a>
                 </div>
             </div>
         {% else %}

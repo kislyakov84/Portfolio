@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - Used HTMX to submit the form asynchronously, adding new projects to the list without a page reload.
 - Implemented form data parsing in FastAPI using `Form()` and `python-multipart`.
 - Added a small UX improvement: the form now resets after successful submission.
+- Basic admin page (`/admin`) to display a list of all projects with edit/delete placeholders.
 
 ### Changed
 - Updated root endpoint test to check for HTML content.
